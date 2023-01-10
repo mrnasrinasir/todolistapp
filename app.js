@@ -5,6 +5,21 @@ const mongoose = require("mongoose");
 const app = express();
 const _ = require("lodash");
 require("dotenv").config();
+const PORT = process.env.PORT || 3000
+
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+}
+
+app.all('*', (req,res) => {
+    res.json({"every thing":"is awesome"})
+})
 
 app.set('view engine', 'ejs');
 
@@ -141,11 +156,9 @@ app.get("/about", function(req, res) {
   res.render("about");
 });
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 3000;
-}
 
-app.listen(port,() => {
-  console.log("Server running on port ${port}");
+connectDB().then(() => {
+  app.listen(PORT,() => {
+    console.log("Server running on port ${port}");
+};
 });
